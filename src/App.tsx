@@ -2,7 +2,11 @@ import {useEffect, useState} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import {Box, Flex, Heading, Input} from "@chakra-ui/react";
+import { PokemonCard, CardImages, Set, Type, Subtype, Ability, Attack, TypeOnCard, SubtypeOnCard, AbilityOnCard,
+    AttackOnCard, WeaknessOnCard, ResistanceOnCard, ImagesOnCard, PokedexNumber} from '/utils/models.ts'
+
+import {Box, Center, Flex, Heading, Input} from "@chakra-ui/react";
+
 
 interface TCGCard {
     abilities: { name: string; text: string }[];
@@ -12,6 +16,7 @@ interface TCGCard {
     hp: number;
     images: { small: string; large: string };
     name: string;
+    id: string;
     nationalPokedexNumbers: number[];
     number: number; // Changed from string to number
     rarity: string;
@@ -25,7 +30,10 @@ interface TCGCard {
 }
 
 
+
 function App() {
+
+    const DB_URL = 'http://localhost:3000/pokemon'
 
     const [cardCollection, setCardCollection] = useState<TCGCard[]>([])
     const [setList, setSetList] = useState([]);
@@ -46,10 +54,11 @@ function App() {
             try {
                 setLoading(true);
                 const fetchAndSet = async (endpoint: string, setter: Function) => {
-                    const res = await fetch(`${DB_URL}/${endpoint}`, options);
+                    const res = await fetch(`${DB_URL}/${endpoint}`);
                     const data = await res.json();
                     setter(data);
                 };
+
                 await fetchAndSet("sets", setSetList);
                 await fetchAndSet("types", setTypeList);
                 await fetchAndSet("toc", setTypeOnCardList);
@@ -70,7 +79,7 @@ function App() {
         };
 
         fetchData();
-    }, [DB_URL, options]);
+    }, [DB_URL]);
 
     useEffect(() => {
         const url = `http://localhost:3000/pokemon/`;
@@ -92,6 +101,7 @@ function App() {
                         convertedRetreatCost: card.convertedRetreatCost ?? 0, // Default to 0 if missing
                         evolvesFrom: card.evolvesFrom || undefined, // Ensure optional value
                         hp: parseInt(card.hp, 10) || 0, // Default to 0 if parsing fails
+                        id: card.id,
                         images: card.images,
                         name: card.name,
                         nationalPokedexNumbers: card.nationalPokedexNumbers || [], // Ensure it's an array
@@ -127,8 +137,31 @@ function App() {
                 }
                 setCardCollection(deck)
             })
+        setLoading(false);
+    }, [setPokedexNumberList])
 
-    }, [])
+    useEffect(() => {
+
+        const cID = cardCollection[5164]
+
+        console.log('cID', cID)
+
+        console.log(typeOnCardList[0])
+
+        const pkType = typeOnCardList.find((x: TypeOnCard) => x.cardID !== cID)
+
+        console.log('pkType', pkType)
+
+        // for (let i=0; i<cardCollection.length; i++) {
+        //     let card = cardCollection[i];
+        //
+        //
+        //
+        // }
+
+    }, [cardCollection]);
+
+    if (loading) return (<Center>Loading...</Center>)
 
     return (
         <Flex bg={'red.100'} justify={'center'} align={'center'} fontWeight={'semibold'} direction={'column'}>
