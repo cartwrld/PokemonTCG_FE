@@ -4,8 +4,6 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import {Box, Flex, Heading, Input} from "@chakra-ui/react";
 
-const API_KEY = "3a54aa8b-da4a-47ac-ae7f-edc78cf15db9"
-
 interface TCGCard {
     abilities: { name: string; text: string }[];
     attacks: { name: string; cost: string[]; convertedEnergyCost: number; damage: string; text: string; }[];
@@ -27,10 +25,52 @@ interface TCGCard {
 }
 
 
-
 function App() {
 
     const [cardCollection, setCardCollection] = useState<TCGCard[]>([])
+    const [setList, setSetList] = useState([]);
+    const [typeList, setTypeList] = useState([]);
+    const [typeOnCardList, setTypeOnCardList] = useState([]);
+    const [abilityList, setAbilityList] = useState([]);
+    const [abilityOnCardList, setAbilityOnCardList] = useState([]);
+    const [attackList, setAttackList] = useState([]);
+    const [attackOnCardList, setAttackOnCardList] = useState([]);
+    const [weaknessList, setWeaknessList] = useState([]);
+    const [resistanceList, setResistanceList] = useState([]);
+    const [pokedexNumberList, setPokedexNumberList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const fetchAndSet = async (endpoint: string, setter: Function) => {
+                    const res = await fetch(`${DB_URL}/${endpoint}`, options);
+                    const data = await res.json();
+                    setter(data);
+                };
+                await fetchAndSet("sets", setSetList);
+                await fetchAndSet("types", setTypeList);
+                await fetchAndSet("toc", setTypeOnCardList);
+                await fetchAndSet("abilities", setAbilityList);
+                await fetchAndSet("aboc", setAbilityOnCardList);
+                await fetchAndSet("attacks", setAttackList);
+                await fetchAndSet("atoc", setAttackOnCardList);
+                await fetchAndSet("woc", setWeaknessList);
+                await fetchAndSet("roc", setResistanceList);
+                await fetchAndSet("pdn", setPokedexNumberList);
+
+            } catch (err) {
+                console.error("Error fetching data:", err);
+                setError("Failed to fetch data.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [DB_URL, options]);
 
     useEffect(() => {
         const url = `http://localhost:3000/pokemon/`;
