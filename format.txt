@@ -1,0 +1,30 @@
+    const setAttacks = (card: TCGCard) => {
+
+        const blankAttack: Attack = {
+            attackID: -1,
+            attackName: '',
+            cost: [''],
+            convNRGCost: -1,
+            damage: -1,
+            text: ''
+        }
+
+        const attacks: Attack[] = [blankAttack]
+
+        const pkAttack: AttackOnCard = attackOnCardList.filter((x: AttackOnCard) => x.cardID === card.cardID)
+
+        const attackobj = pkAttack[0]
+
+        if (attackobj === undefined || attackobj === null) return attacks;
+
+        attacks.pop()
+
+        const attack: Attack = attackList.filter((x: Attack) => x.attackID === pkAttack[0].attackID)
+
+        if (pkAttack.length === 0) return attacks;
+
+        if (attack.length > 1) for (const t of attack) attacks.push(t)
+        else attacks.push(attack[0])
+
+        return attacks;
+    }
