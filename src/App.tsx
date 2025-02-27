@@ -221,6 +221,7 @@ useEffect(() => {
 if (loading) return (<Center>Loading...</Center>)
 
 return (
+    <Center bg={'red.600'} fontWeight={'semibold'} direction={'column'}>
     <Flex bg={'red.100'} justify={'center'} align={'center'} fontWeight={'semibold'} direction={'column'}>
         {/*  Search Filters  */}
         <Flex bg={'blue.200'} justify={'space-around'} align={'center'} direction={'column'} w={'90%'}>
@@ -242,13 +243,15 @@ return (
             </Flex>
         </Flex>
     </Flex>
+    </Center>
 )
 }
 
 function DisplayCard({card}: { card: TCGCard }) {
     return (
-        <Flex p={3} m={2} bg={'gray.400'}>
+        <Flex p={3} m={2} bg={'gray.400'} w={'262px'} rounded={8} h={'370px'}>
             {card.name}
+
         </Flex>
     )
 }

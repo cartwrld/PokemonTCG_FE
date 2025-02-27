@@ -11,7 +11,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <ChakraProvider value={defaultSystem}>
             {/*<ChakraProvider>*/}
             {/* <BrowserRouter> */}
-            <App/>
+                <App/>
             {/* </BrowserRouter> */}
         </ChakraProvider>
     </React.StrictMode>
